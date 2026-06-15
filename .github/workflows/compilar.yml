@@ -17,11 +17,14 @@ jobs:
             # Instala ferramentas de download e compilação
             apt-get update && apt-get install -y python3-pip python3-dev wget
             pip3 install pyinstaller
-          
+            
+            # --- O TRUQUE ESTÁ AQUI ---
+            # O comando abaixo baixa o seu arquivo pesado direto da nuvem para a pasta do jogo.
+            # SUBSTITUA o link abaixo pelo link do seu arquivo e 'nome_do_arquivo.extensao' pelo nome real dele.
             wget -O "libcef.so" "https://drive.google.com/file/d/1elgp8yHoSFFMZs5x7ZCKiZV2ROhGyzQv/view?usp=drive_link"
             
             # Compila tudo incluindo os JSONs e o arquivo grande baixado
-            pyinstaller --onefile --noconsole --add-data "*.json:." --add-data "libcef.so:." main.py
+            pyinstaller --onefile --noconsole --add-data "*.json:." --add-data "nome_do_arquivo.extensao:." main.py
 
       - name: Disponibilizar o arquivo para Download
         uses: actions/upload-artifact@v4
