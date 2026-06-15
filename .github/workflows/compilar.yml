@@ -1,0 +1,30 @@
+name: Compilar para Raspberry Pi
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar codigo do jogo
+        uses: actions/checkout@v4
+
+      - name: Configurar simulador do Raspberry Pi (ARM64)
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: aarch64
+          distro: ubuntu22.04
+          run: |
+            # Instala ferramentas de download e compilação
+            apt-get update && apt-get install -y python3-pip python3-dev wget
+            pip3 install pyinstaller
+          
+            wget -O "libcef.so" "https://drive.google.com/file/d/1elgp8yHoSFFMZs5x7ZCKiZV2ROhGyzQv/view?usp=drive_link"
+            
+            # Compila tudo incluindo os JSONs e o arquivo grande baixado
+            pyinstaller --onefile --noconsole --add-data "*.json:." --add-data "libcef.so:." main.py
+
+      - name: Disponibilizar o arquivo para Download
+        uses: actions/upload-artifact@v4
+        with:
+          name: Jogo-RaspberryPi
+          path: dist/main
